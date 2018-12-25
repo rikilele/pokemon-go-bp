@@ -32,10 +32,10 @@ function writeResultsToCSV(results, fileName) {
     results.forEach((result) => {
       fs.appendFileSync(pathToFile, result + '\n');
     });
-    console.log(`Output results to file ${fileName}`);
+    console.log(`+ Output results to file ${fileName}`);
   } catch (err) {
-    console.log('Error in writeResultsToCSV()');
-    console.log('See below for error\n');
+    console.log('- Error in writeResultsToCSV()');
+    console.log('- See below for error\n');
     console.error(err);
   }
 }
@@ -46,9 +46,9 @@ function writeResultsToCSV(results, fileName) {
 async function runBPAnalysis() {
   const cpmTable = buildCPMTable();
   const baseStats = await fetchBaseStats();
-  console.log('Optimizing for Great League');
+  console.log('+ Optimizing for Great League');
   const resultsGreat = optimizeAllPokemonBP(baseStats, CP_MAX_GREAT, cpmTable, AVG_STATS_GREAT);
-  console.log('Optimizing for Ultra League');
+  console.log('+ Optimizing for Ultra League');
   const resultsUltra = optimizeAllPokemonBP(baseStats, CP_MAX_ULTRA, cpmTable, AVG_STATS_ULTRA);
   const sortByBP = (a, b) => {
     if (a[6] < b[6])      return 1;
@@ -62,5 +62,5 @@ async function runBPAnalysis() {
   writeResultsToCSV(resultsUltra, 'out/ultra.csv');
 }
 
-console.log('Starting BP optimization for all Pokemon');
-runBPAnalysis().then(() => console.log('BP optimization complete'));
+console.log('+ Starting BP optimization for all Pokemon');
+runBPAnalysis().then(() => console.log('+ BP optimization complete'));
