@@ -11,16 +11,13 @@ const { CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA } = require
 function optimizeAllPokemonBP(baseStats, maxCP, cpmTable, avgStats) {
   const progressBar = new progress.Bar({ clearOnComplete: true }, progress.Presets.shades_grey);
   progressBar.start(baseStats.length, 0);
-
   const results = baseStats.map((pokemon) => {
     const { name, baseS, baseA, baseD } = pokemon;
     const { pl, ivS, ivA, ivD, bp } = maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats);
     const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
-
     progressBar.increment();
     return [name, pl, ivS, ivA, ivD, cp, bp];
   });
-
   progressBar.stop();
   return results;
 }
@@ -49,13 +46,10 @@ function writeResultsToCSV(results, fileName) {
 async function runBPAnalysis() {
   const cpmTable = buildCPMTable();
   const baseStats = await fetchBaseStats();
-
   console.log('Optimizing for Great League');
   const resultsGreat = optimizeAllPokemonBP(baseStats, CP_MAX_GREAT, cpmTable, AVG_STATS_GREAT);
-
   console.log('Optimizing for Ultra League');
   const resultsUltra = optimizeAllPokemonBP(baseStats, CP_MAX_ULTRA, cpmTable, AVG_STATS_ULTRA);
-
   const sortByBP = (a, b) => {
     if (a[6] < b[6])      return 1;
     else if (a[6] > b[6]) return -1;
@@ -64,7 +58,6 @@ async function runBPAnalysis() {
 
   resultsGreat.sort(sortByBP);
   resultsUltra.sort(sortByBP);
-
   writeResultsToCSV(resultsGreat, 'out/great.csv');
   writeResultsToCSV(resultsUltra, 'out/ultra.csv');
 }
