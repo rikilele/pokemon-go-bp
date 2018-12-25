@@ -1,0 +1,25 @@
+{
+  "name": "pokemongo-bp",
+  "version": "1.0.0",
+  "description": "Works with Battle Power (BP) as a new way of evaluating strength in Pokemon GO.",
+  "main": "src/optimize.js",
+  "scripts": {
+    "optimize": "node src/optimize.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rikilele/pokemongo-bp.git"
+  },
+  "author": "Riki Singh Khorana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rikilele/pokemongo-bp/issues"
+  },
+  "homepage": "https://github.com/Rikilele/pokemongo-bp#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "cli-progress": "^2.1.1",
+    "request-promise": "^4.2.2"
+  }
+}
