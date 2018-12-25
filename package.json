@@ -4,6 +4,7 @@
   "description": "Works with Battle Power (BP) as a new way of evaluating strength in Pokemon GO.",
   "main": "src/optimize.js",
   "scripts": {
+    "analyze": "node src/analyze.js",
     "optimize": "node src/optimize.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
