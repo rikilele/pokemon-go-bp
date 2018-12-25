@@ -10,13 +10,15 @@ Pokemon GO has three different leagues for their PVP battle feature:
 - Ultra League (Max CP: 2500)
 - Master League (No CP Limit)
 
-The Great and Ultra leagues are of special interest because their of their CP caps.
-By standardizing all Pokemon to a certain CP, Pokemon that used to be strong because of their high CPs cannot enjoy that benefit anymore.
-As a result, we see crazy results like Alolan Raticate beating Tyranitar.
+The Great and Ultra leagues are of special interest because of their CP caps.
+By standardizing all Pokemon to a certain CP, Pokemon that used to be strong due to their high CP values cannot enjoy that benefit anymore.
+As a result, we see crazy results like Alolan Raticates regularly beating Tyranitars in battles.
 
-Now that CPs are fixed, we need a measure of a Pokemon's strength other than the CP.
+We now need a measure of a Pokemon's strength other than the CP for PVP battles.
 
-### How the BP is calculated
+And the BP does it.
+
+### BP Calculation
 
 The battle logic of Pokemon GO is explained in detail [here](https://pokemongo.gamepress.gg/damage-mechanics).
 
@@ -47,13 +49,14 @@ This is exactly how the BP is calculated, but by taking average stamina, attack,
 - Clone this repository
 - `npm install`
 
-### Usage
+### Optimization
 
-To run an optimization with respect to BP on all Pokemon in the game
+This script generates a list of Pokemon stats (IV and PL) optimized for BP.
 
 - `npm run optimize`
-- Check `out/*.csv` for results
 
-To run an interactive command line tool to calculate BP on specific stats
+### Analyze your own Pokemon
+
+This is a interactive command line tool to calculate BP for specific Pokemon.
 
 - `npm run analyze`
