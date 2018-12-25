@@ -1,11 +1,7 @@
 const fs = require('fs');
 const progress = require('cli-progress');
 
-const maxBP = require('./utils/maxBP');
-const calcCP = require('./utils/calcCP');
-const buildCPMTable = require('./utils/buildCPMTable');
-const fetchBaseStats = require('./utils/fetchBaseStats');
-
+const { maxBP, calcCP, buildCPMTable, fetchBaseStats } = require('./utils');
 const { CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA } = require('./constants');
 
 /**
