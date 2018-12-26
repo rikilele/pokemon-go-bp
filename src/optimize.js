@@ -1,8 +1,36 @@
 const fs = require('fs');
 const progress = require('cli-progress');
 
-const { maxBP, calcCP, buildCPMTable, fetchBaseStats } = require('./utils');
-const { CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA } = require('./constants');
+const { maxPL, calcBP, calcCP, buildCPMTable, fetchBaseStats } = require('./utils');
+const { IV_VALUES, CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA } = require('./constants');
+
+/**
+ * Maximizes the BP of a Pokemon, by altering it's IV and PL.
+ * This algorithm will prioritize Attack > Defense > Stamina.
+ * This is because Attack can be multiplied during battle time,
+ * Defense is what diverts Attack, and Stamina is always constant.
+ */
+function maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats) {
+  let bestBP = Number.MIN_SAFE_INTEGER;
+  let bestStats = {};
+  IV_VALUES.forEach((ivA) => {
+    IV_VALUES.forEach((ivD) => {
+      IV_VALUES.forEach((ivS) => {
+        const pl = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, maxCP);
+        const bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], avgStats);
+        if (bp > bestBP) {
+          bestBP = bp;
+          bestStats['pl'] = pl;
+          bestStats['ivS'] = ivS;
+          bestStats['ivA'] = ivA;
+          bestStats['ivD'] = ivD;
+          bestStats['bp'] = bp;
+        }
+      })
+    });
+  });
+  return bestStats;
+}
 
 /**
  * For each Pokemon (in baseStats), optimize BP given maxCP and avgStats for reference.
