@@ -108,44 +108,74 @@ async function run() {
     }
   ];
 
-  inquirer.prompt(questions).then((answer) => {
-    const bs = baseStats.find(stats => stats['name'] === answer['name']);
-    const ct = buildCPMTable();
-    const ivS = parseInt(answer['ivS'], 10);
-    const ivA = parseInt(answer['ivA'], 10);
-    const ivD = parseInt(answer['ivD'], 10);
-    let pl = parseFloat(answer['pl']);
-    if (!answer['knownPL']) {
-      pl = maxPL(ct, bs['baseS'], bs['baseA'], bs['baseD'], ivS, ivA, ivD, answer['cp']);
-    }
-    const cp = calcCP(bs['baseS'], bs['baseA'], bs['baseD'], ivS, ivA, ivD, ct[pl]);
+  const ask = () => {
+    inquirer.prompt(questions).then((answer) => {
+      const baseStat = baseStats.find(stats => stats['name'] === answer['name']);
+      const cpmTable = buildCPMTable();
+      const { baseS, baseA, baseD } = baseStat;
+      const ivS = parseInt(answer['ivS'], 10);
+      const ivA = parseInt(answer['ivA'], 10);
+      const ivD = parseInt(answer['ivD'], 10);
+      let pl = parseFloat(answer['pl']);
+      if (!answer['knownPL']) {
+        pl = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, answer['cp']);
+      }
+      const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
 
-    console.log(
+      console.log(
         `\n+ Name:    ${answer['name']}`
-      + `\n+ CP:      ${cp}`
-      + `\n+ PL:      ${pl}`
-      + `\n+ Stamina: ${ivS}`
-      + `\n+ Attack:  ${ivA}`
-      + `\n+ Defense: ${ivD}\n`
-    );
+        + `\n+ CP:      ${cp}`
+        + `\n+ PL:      ${pl}`
+        + `\n+ Stamina: ${ivS}`
+        + `\n+ Attack:  ${ivA}`
+        + `\n+ Defense: ${ivD}\n`
+      );
 
-    let bp = 0;
-    if (cp <= CP_MAX_GREAT) {
-      bp = calcBP(bs['baseS'], bs['baseA'], bs['baseD'], ivS, ivA, ivD, ct[pl], AVG_STATS_GREAT);
-      console.log(`+ This Pokemon's Great League BP is ${bp}`);
-    } else {
-      console.log('+ This Pokemon is not eligible for the Great League');
-    }
+      let bp = 0;
+      let optPL = 0;
+      let optBP = 0;
+      let optCP = 0;
+      if (cp <= CP_MAX_GREAT) {
+        bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], AVG_STATS_GREAT);
+        optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
+        optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_GREAT);
+        optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
+        console.log(`+ This Pokemon's current Great League BP is ${bp}`);
+        console.log(`+ This Pokemon's BP is optimized to ${optBP} at PL ${optPL} and CP ${optCP}`)
+      } else {
+        console.log('+ This Pokemon is not eligible for the Great League');
+      }
 
-    if (cp <= CP_MAX_ULTRA) {
-      bp = calcBP(bs['baseS'], bs['baseA'], bs['baseD'], ivS, ivA, ivD, ct[pl], AVG_STATS_ULTRA);
-      console.log(`+ This Pokemon's Ultra League BP is ${bp}`);
-    } else {
-      console.log('+ This Pokemon is not eligible for the Ultra League');
-    }
+      console.log('');
 
-    console.log('\n+ Try `npm run optimize` to see optimum stats for all Pokemon')
-  });
+      if (cp <= CP_MAX_ULTRA) {
+        bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], AVG_STATS_ULTRA);
+        optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
+        optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_ULTRA);
+        optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
+        console.log(`+ This Pokemon's current Ultra League BP is ${bp}`);
+        console.log(`+ This Pokemon's BP is optimized to ${optBP} at PL ${optPL} and CP ${optCP}`)
+      } else {
+        console.log('+ This Pokemon is not eligible for the Ultra League');
+      }
+
+      console.log('');
+
+      inquirer.prompt({
+        type: 'confirm',
+        name: 'keepGoing',
+        message: 'Do you want to continue analyzing?',
+        default: false
+      })
+        .then((ans) => {
+          if (ans['keepGoing']) {
+            ask();
+          }
+        });
+    });
+  };
+
+  ask();
 }
 
 run();
