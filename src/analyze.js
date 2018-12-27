@@ -154,8 +154,8 @@ async function run() {
         optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
         optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_GREAT);
         optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        msg1 = `+ This Pokemon's current Great League BP is ${chalk.cyan.bold.underline(bp)}`;
-        msg2 = `+ This Pokemon's BP is optimized to ${chalk.red.bold.underline(optBP)} at PL ${optPL} and CP ${optCP}`;
+        msg1 = `+ This Pokemon's Great League BP is ${chalk.cyan.bold.underline(bp)}`;
+        msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
         console.log(msg1);
         console.log(msg2);
       } else {
@@ -169,8 +169,8 @@ async function run() {
         optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
         optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_ULTRA);
         optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        msg1 = `+ This Pokemon's current Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
-        msg2 = `+ This Pokemon's BP is optimized to ${chalk.red.bold.underline(optBP)} at PL ${optPL} and CP ${optCP}`;
+        msg1 = `+ This Pokemon's Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
+        msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
         console.log(msg1);
         console.log(msg2);
       } else {
