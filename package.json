@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/Rikilele/pokemongo-bp#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
     "cli-progress": "^2.1.1",
     "cli-spinner": "^0.2.8",
     "inquirer": "^6.2.1",
+    "npm": "^6.5.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
   }

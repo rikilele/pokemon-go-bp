@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const inquirer = require('inquirer');
 
 const { maxPL, calcBP, calcCP, buildCPMTable, fetchBaseStats } = require('./utils');
@@ -135,13 +136,17 @@ async function run() {
       let optPL = 0;
       let optBP = 0;
       let optCP = 0;
+      let msg1 = '';
+      let msg2 = '';
       if (cp <= CP_MAX_GREAT) {
         bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], AVG_STATS_GREAT);
         optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
         optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_GREAT);
         optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        console.log(`+ This Pokemon's current Great League BP is ${bp}`);
-        console.log(`+ This Pokemon's BP is optimized to ${optBP} at PL ${optPL} and CP ${optCP}`)
+        msg1 = `+ This Pokemon's current Great League BP is ${chalk.cyan.bold.underline(bp)}`;
+        msg2 = `+ This Pokemon's BP is optimized to ${chalk.red.bold.underline(optBP)} at PL ${optPL} and CP ${optCP}`;
+        console.log(msg1);
+        console.log(msg2);
       } else {
         console.log('+ This Pokemon is not eligible for the Great League');
       }
@@ -153,8 +158,10 @@ async function run() {
         optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
         optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_ULTRA);
         optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        console.log(`+ This Pokemon's current Ultra League BP is ${bp}`);
-        console.log(`+ This Pokemon's BP is optimized to ${optBP} at PL ${optPL} and CP ${optCP}`)
+        msg1 = `+ This Pokemon's current Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
+        msg2 = `+ This Pokemon's BP is optimized to ${chalk.red.bold.underline(optBP)} at PL ${optPL} and CP ${optCP}`;
+        console.log(msg1);
+        console.log(msg2);
       } else {
         console.log('+ This Pokemon is not eligible for the Ultra League');
       }
