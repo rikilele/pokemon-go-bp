@@ -1,8 +1,20 @@
 const fs = require('fs');
 const progress = require('cli-progress');
 
-const { maxPL, calcBP, calcCP, buildCPMTable, fetchBaseStats } = require('./utils');
-const { IV_VALUES, CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA } = require('./constants');
+const {
+  maxPL,
+  calcBP,
+  calcCP,
+  buildCPMTable,
+  fetchBaseStats,
+} = require('./utils');
+const {
+  IV_VALUES,
+  CP_MAX_GREAT,
+  CP_MAX_ULTRA,
+  AVG_STATS_GREAT,
+  AVG_STATS_ULTRA,
+} = require('./constants');
 
 /**
  * Maximizes the BP of a Pokemon, by altering it's IV and PL.
@@ -12,7 +24,7 @@ const { IV_VALUES, CP_MAX_GREAT, CP_MAX_ULTRA, AVG_STATS_GREAT, AVG_STATS_ULTRA 
  */
 function maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats) {
   let bestBP = Number.MIN_SAFE_INTEGER;
-  let bestStats = {};
+  const bestStats = {};
   IV_VALUES.forEach((ivA) => {
     IV_VALUES.forEach((ivD) => {
       IV_VALUES.forEach((ivS) => {
@@ -20,13 +32,13 @@ function maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats) {
         const bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], avgStats);
         if (bp > bestBP) {
           bestBP = bp;
-          bestStats['pl'] = pl;
-          bestStats['ivS'] = ivS;
-          bestStats['ivA'] = ivA;
-          bestStats['ivD'] = ivD;
-          bestStats['bp'] = bp;
+          bestStats.pl = pl;
+          bestStats.ivS = ivS;
+          bestStats.ivA = ivA;
+          bestStats.ivD = ivD;
+          bestStats.bp = bp;
         }
-      })
+      });
     });
   });
   return bestStats;
@@ -40,8 +52,12 @@ function optimizeAllPokemonBP(baseStats, maxCP, cpmTable, avgStats) {
   const progressBar = new progress.Bar({ clearOnComplete: true }, progress.Presets.shades_grey);
   progressBar.start(baseStats.length, 0);
   const results = baseStats.map((pokemon) => {
-    const { name, baseS, baseA, baseD } = pokemon;
-    const { pl, ivS, ivA, ivD, bp } = maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats);
+    const {
+      name, baseS, baseA, baseD,
+    } = pokemon;
+    const {
+      pl, ivS, ivA, ivD, bp,
+    } = maxBP(cpmTable, baseS, baseA, baseD, maxCP, avgStats);
     const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
     progressBar.increment();
     return [name, pl, ivS, ivA, ivD, cp, bp];
@@ -55,10 +71,10 @@ function optimizeAllPokemonBP(baseStats, maxCP, cpmTable, avgStats) {
  */
 function writeResultsToCSV(results, fileName) {
   try {
-    const pathToFile = __dirname + '/../' + fileName;
+    const pathToFile = `${__dirname}/../${fileName}`;
     fs.writeFileSync(pathToFile, 'Name,PL,IV_S,IV_A,IV_D,CP,BP\n');
     results.forEach((result) => {
-      fs.appendFileSync(pathToFile, result + '\n');
+      fs.appendFileSync(pathToFile, `${result}\n`);
     });
     console.log(`+ Output results to file ${fileName}`);
   } catch (err) {
@@ -79,9 +95,9 @@ async function runBPAnalysis() {
   console.log('+ Optimizing for Ultra League');
   const resultsUltra = optimizeAllPokemonBP(baseStats, CP_MAX_ULTRA, cpmTable, AVG_STATS_ULTRA);
   const sortByBP = (a, b) => {
-    if (a[6] < b[6])      return 1;
-    else if (a[6] > b[6]) return -1;
-    else                  return 0;
+    if (a[6] < b[6]) return 1;
+    if (a[6] > b[6]) return -1;
+    return 0;
   };
 
   resultsGreat.sort(sortByBP);

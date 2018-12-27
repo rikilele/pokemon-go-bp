@@ -19,10 +19,10 @@ async function fetchBaseStats() {
   table.each((i, row) => {
     if (Object.keys(row.attribs).length !== 0) {
       baseStats.push({
-        name:  row.attribs['data-col1'],
+        name: row.attribs['data-col1'],
         baseS: parseInt(row.attribs['data-col2'], 10),
         baseA: parseInt(row.attribs['data-col3'], 10),
-        baseD: parseInt(row.attribs['data-col4'], 10)
+        baseD: parseInt(row.attribs['data-col4'], 10),
       });
     }
   });

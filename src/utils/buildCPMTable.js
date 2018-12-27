@@ -14,7 +14,7 @@ function buildCPMTable() {
     if (pl >= 30) step = 0.004459460790;
     else if (pl >= 20) step = 0.008924905903;
     else if (pl >= 10) step = 0.008919025675;
-    return Math.sqrt(Math.pow(cpm, 2) + step);
+    return Math.sqrt((cpm ** 2) + step);
   }, 0.094);
 
   return table;

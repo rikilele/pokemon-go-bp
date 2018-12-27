@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "node src/analyze.js",
     "optimize": "node src/optimize.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "./node_modules/.bin/eslint .; exit 0"
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,10 @@
     "npm": "^6.5.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
   }
 }
