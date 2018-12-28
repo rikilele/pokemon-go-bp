@@ -71,12 +71,17 @@ function optimizeAllPokemonBP(baseStats, maxCP, cpmTable, avgStats) {
  */
 function writeResultsToCSV(results, fileName) {
   try {
-    const pathToFile = `${__dirname}/../${fileName}`;
+    const pathToOut = `${__dirname}/../out`;
+    if (!fs.existsSync(pathToOut)) {
+      fs.mkdirSync(pathToOut);
+    }
+
+    const pathToFile = `${pathToOut}/${fileName}`;
     fs.writeFileSync(pathToFile, 'Name,PL,IV_S,IV_A,IV_D,CP,BP\n');
     results.forEach((result) => {
       fs.appendFileSync(pathToFile, `${result}\n`);
     });
-    console.log(`+ Output results to file ${fileName}`);
+    console.log(`+ Output results to file out/${fileName}`);
   } catch (err) {
     console.log('- Error in writeResultsToCSV()');
     console.log('- See below for error\n');
@@ -102,8 +107,9 @@ async function runBPAnalysis() {
 
   resultsGreat.sort(sortByBP);
   resultsUltra.sort(sortByBP);
-  writeResultsToCSV(resultsGreat, 'out/great.csv');
-  writeResultsToCSV(resultsUltra, 'out/ultra.csv');
+
+  writeResultsToCSV(resultsGreat, 'great.csv');
+  writeResultsToCSV(resultsUltra, 'ultra.csv');
 }
 
 console.log('+ Starting BP optimization for all Pokemon');
