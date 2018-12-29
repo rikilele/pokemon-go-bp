@@ -5,6 +5,7 @@ const {
   maxPL,
   calcBP,
   calcCP,
+  getMinStats,
   buildCPMTable,
   fetchBaseStats,
 } = require('./utils');
@@ -12,8 +13,6 @@ const {
 const {
   CP_MAX_GREAT,
   CP_MAX_ULTRA,
-  AVG_STATS_GREAT,
-  AVG_STATS_ULTRA,
 } = require('./constants');
 
 async function run() {
@@ -143,38 +142,50 @@ async function run() {
         + `\n+ Defense: ${ivD}\n`,
       );
 
-      let bp = 0;
-      let optPL = 0;
-      let optBP = 0;
-      let optCP = 0;
-      let msg1 = '';
-      let msg2 = '';
-      if (cp <= CP_MAX_GREAT) {
-        bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], AVG_STATS_GREAT);
-        optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
-        optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_GREAT);
-        optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        msg1 = `+ This Pokemon's Great League BP is ${chalk.cyan.bold.underline(bp)}`;
-        msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
-        console.log(msg1);
-        console.log(msg2);
-      } else {
-        console.log('+ This Pokemon is not eligible for the Great League');
-      }
+      const {
+        minS, minA, minD, minPL,
+      } = getMinStats(answer.name);
+      if (
+        ivS >= minS
+        && ivA >= minA
+        && ivD >= minD
+        && pl >= minPL
+      ) {
+        let bp = 0;
+        let optPL = 0;
+        let optBP = 0;
+        let optCP = 0;
+        let msg1 = '';
+        let msg2 = '';
+        if (cp <= CP_MAX_GREAT) {
+          bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], CP_MAX_GREAT);
+          optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
+          optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], CP_MAX_GREAT);
+          optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
+          msg1 = `+ This Pokemon's Great League BP is ${chalk.cyan.bold.underline(bp)}`;
+          msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
+          console.log(msg1);
+          console.log(msg2);
+        } else {
+          console.log('- This Pokemon is not eligible for the Great League');
+        }
 
-      console.log('');
+        console.log('');
 
-      if (cp <= CP_MAX_ULTRA) {
-        bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], AVG_STATS_ULTRA);
-        optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
-        optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], AVG_STATS_ULTRA);
-        optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-        msg1 = `+ This Pokemon's Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
-        msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
-        console.log(msg1);
-        console.log(msg2);
+        if (cp <= CP_MAX_ULTRA) {
+          bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], CP_MAX_ULTRA);
+          optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
+          optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], CP_MAX_ULTRA);
+          optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
+          msg1 = `+ This Pokemon's Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
+          msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
+          console.log(msg1);
+          console.log(msg2);
+        } else {
+          console.log('- This Pokemon is not eligible for the Ultra League');
+        }
       } else {
-        console.log('+ This Pokemon is not eligible for the Ultra League');
+        console.log('- This Pokemon has illegal IV or PL stats');
       }
 
       console.log('');

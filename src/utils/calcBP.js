@@ -1,12 +1,11 @@
 /**
- * Calculates the BP (Battle Power) of a Pokemon given it's IV, CPM, and the average stat.
+ * Calculates the BP (Battle Power) of a Pokemon given it's IV, CPM, and the max CP.
  */
-function calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpm, avgStats) {
-  const s = Math.floor((baseS + ivS) * cpm);
-  const a = Math.floor((baseA + ivA) * cpm);
-  const d = Math.floor((baseD + ivD) * cpm);
-  const bp = (s * d / avgStats[1]) - (avgStats[0] * avgStats[2] / a);
-  return Math.floor(Math.round(bp * 1000)) / 100;
+function calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpm, maxCP) {
+  const s = baseS + ivS;
+  const a = baseA + ivA;
+  const d = baseD + ivD;
+  return Math.floor(s * (a ** 1.4) * d * (cpm ** 3) / (Math.sqrt(maxCP) * 300));
 }
 
 module.exports = calcBP;
