@@ -121,9 +121,10 @@ async function run() {
 
   const ask = () => {
     inquirer.prompt(questions).then((answer) => {
-      const baseStat = baseStats.find(stats => stats.name === answer.name);
+      const {
+        baseS, baseA, baseD,
+      } = baseStats.find(stats => stats.name === answer.name);
       const cpmTable = buildCPMTable();
-      const { baseS, baseA, baseD } = baseStat;
       const ivS = parseInt(answer.ivS, 10);
       const ivA = parseInt(answer.ivA, 10);
       const ivD = parseInt(answer.ivD, 10);
@@ -131,6 +132,7 @@ async function run() {
       if (!answer.knownPL) {
         pl = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, answer.cp);
       }
+
       const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
 
       console.log(
@@ -193,10 +195,11 @@ async function run() {
       inquirer.prompt({
         type: 'confirm',
         name: 'keepGoing',
-        message: 'Do you want to continue analyzing?',
-        default: false,
+        message: 'Do you want to continue with your analysis?',
+        default: true,
       })
         .then((ans) => {
+          console.log('');
           if (ans.keepGoing) {
             ask();
           }

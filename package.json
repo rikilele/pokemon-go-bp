@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "node src/analyze.js",
     "optimize": "node src/optimize.js",
-    "lint": "./node_modules/.bin/eslint .; exit 0"
+    "lint": "./node_modules/.bin/eslint . ; exit 0"
   },
   "repository": {
     "type": "git",
