@@ -8,7 +8,7 @@ This repository contains the source code for BP calculation and related scripts.
 # Confirm node version >= 8.1.2
 $ node -v
 
-# Confrim npm version >= 5.8.0
+# Confirm npm version >= 5.8.0
 $ npm -v
 
 # Clone the repository
