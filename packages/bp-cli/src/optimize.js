@@ -1,20 +1,17 @@
-const fs = require('fs');
-const progress = require('cli-progress');
+import fs from 'fs';
+import progress from 'cli-progress';
 
-const {
+import {
   maxPL,
   calcBP,
   calcCP,
   getMinStats,
   buildCPMTable,
   fetchBaseStats,
-} = require('./utils');
-
-const {
   IV_VALUES,
   CP_MAX_GREAT,
   CP_MAX_ULTRA,
-} = require('./constants');
+} from 'shared';
 
 /**
  * Maximizes the BP of a Pokemon, by altering it's IV and PL.
@@ -126,5 +123,5 @@ async function runBPAnalysis() {
   writeResultsToCSV(resultsUltra, 'ultra.csv');
 }
 
-console.log('+ Starting BP optimization for all Pokemon');
+console.log('\n+ Starting BP optimization for all Pokemon');
 runBPAnalysis().then(() => console.log('+ BP optimization complete'));

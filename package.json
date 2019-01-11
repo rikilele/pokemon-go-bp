@@ -2,12 +2,7 @@
   "name": "pokemon-go-bp",
   "version": "1.0.0",
   "description": "Works with Battle Power (BP) as a new way of evaluating strength in Pokemon GO.",
-  "main": "src/optimize.js",
-  "scripts": {
-    "analyze": "node src/analyze.js",
-    "optimize": "node src/optimize.js",
-    "lint": "./node_modules/.bin/eslint . ; exit 0"
-  },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Rikilele/pokemon-go-bp.git"
@@ -18,19 +13,18 @@
     "url": "https://github.com/Rikilele/pokemon-go-bp/issues"
   },
   "homepage": "https://github.com/Rikilele/pokemon-go-bp#readme",
-  "dependencies": {
-    "chalk": "^2.4.1",
-    "cheerio": "^1.0.0-rc.2",
-    "cli-progress": "^2.1.1",
-    "cli-spinner": "^0.2.8",
-    "inquirer": "^6.2.1",
-    "npm": "^6.5.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "analyze": "cd packages/bp-cli && yarn analyze",
+    "optimize": "cd packages/bp-cli && yarn optimize",
+    "prebuild": "lerna exec --parallel -- del-cli dist",
+    "build": "lerna exec --scope bp-cli --scope shared -- babel src -d dist",
+    "lint": "lerna exec --scope bp-cli --scope shared -- eslint src"
   },
   "devDependencies": {
-    "eslint": "^5.11.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "del-cli": "^1.1.0",
+    "lerna": "^3.10.2"
   }
 }

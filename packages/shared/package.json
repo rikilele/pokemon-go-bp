@@ -1,0 +1,27 @@
+{
+  "name": "shared",
+  "description": "Shared functions",
+  "version": "1.0.0",
+  "author": "Riki Singh Khorana",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "del-cli dist",
+    "build": "babel src -d dist",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "cli-spinner": "^0.2.8",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}

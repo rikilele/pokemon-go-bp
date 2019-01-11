@@ -62,3 +62,6 @@ typings/
 
 # Program output files
 out/
+
+# Dist files
+dist/

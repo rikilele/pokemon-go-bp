@@ -1,24 +1,21 @@
-const chalk = require('chalk');
-const inquirer = require('inquirer');
+import chalk from 'chalk';
+import inquirer from 'inquirer';
 
-const {
+import {
   maxPL,
   calcBP,
   calcCP,
   getMinStats,
   buildCPMTable,
   fetchBaseStats,
-} = require('./utils');
-
-const {
   CP_MAX_GREAT,
   CP_MAX_ULTRA,
-} = require('./constants');
+} from 'shared';
 
 async function run() {
   const baseStats = await fetchBaseStats();
 
-  console.log('+ Please enter Pokemon details\n');
+  console.log('\n+ Please enter Pokemon details\n');
 
   const questions = [
     {

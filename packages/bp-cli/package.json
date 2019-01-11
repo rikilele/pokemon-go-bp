@@ -1,0 +1,27 @@
+{
+  "name": "bp-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to analyze and optimize Pokemon GO BP.",
+  "private": true,
+  "scripts": {
+    "analyze": "node dist/analyze",
+    "optimize": "node dist/optimize",
+    "prebuild": "del-cli dist",
+    "build": "babel src -d dist",
+    "lint": "eslint src"
+
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "cli-progress": "^2.1.1",
+    "inquirer": "^6.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
