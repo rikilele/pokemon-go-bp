@@ -49,8 +49,8 @@ $ yarn analyze
 
 ```sh
 # Building
-yarn build
+$ yarn build
 
 # Linting
-yarn lint
+$ yarn lint
 ```
