@@ -54,13 +54,14 @@ function maxBP(cpmTable, baseS, baseA, baseD, maxCP, minS, minA, minD, minPL) {
  * A progress bar is set up for visualization on the commandline.
  */
 function optimizeAllPokemonBP(baseStats, cpmTable, maxCP) {
+  const names = Object.keys(baseStats);
   const progressBar = new progress.Bar({ clearOnComplete: true }, progress.Presets.shades_grey);
-  progressBar.start(baseStats.length, 0);
+  progressBar.start(names.length, 0);
   const results = [];
-  baseStats.forEach((pokemon) => {
+  names.forEach((name) => {
     const {
-      name, baseS, baseA, baseD,
-    } = pokemon;
+      baseS, baseA, baseD,
+    } = baseStats[name];
     const {
       minS, minA, minD, minPL,
     } = getMinStats(name);
@@ -124,4 +125,4 @@ async function runBPAnalysis() {
 }
 
 console.log('\n+ Starting BP optimization for all Pokemon');
-runBPAnalysis().then(() => console.log('+ BP optimization complete'));
+runBPAnalysis().then(() => console.log('+ BP optimization complete\n'));

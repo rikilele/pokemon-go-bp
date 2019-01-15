@@ -23,7 +23,7 @@ async function run() {
       name: 'name',
       message: 'What is the name of the Pokemon?',
       validate: (name) => {
-        if (baseStats.find(stats => stats.name === name)) return true;
+        if (name in baseStats) return true;
         return 'Couldn\'t identify Pokemon. Make sure to type the complete name in Japanese';
       },
     },
@@ -120,7 +120,7 @@ async function run() {
     inquirer.prompt(questions).then((answer) => {
       const {
         baseS, baseA, baseD,
-      } = baseStats.find(stats => stats.name === answer.name);
+      } = baseStats[answer.name];
       const cpmTable = buildCPMTable();
       const ivS = parseInt(answer.ivS, 10);
       const ivA = parseInt(answer.ivA, 10);
