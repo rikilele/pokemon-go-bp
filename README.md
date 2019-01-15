@@ -29,7 +29,7 @@ $ yarn build
 
 ## Usage
 
-To generate a list of Pokemon stats (IV and PL) optimized for BP:
+To generate a list of Pokemon stats (IV and PL) optimized for BP
 
 ```sh
 # Run optimization
@@ -40,14 +40,19 @@ $ cd packages/bp-cli/out
 
 ```
 
-For an interactive command line tool to calculate BP for specific Pokemon:
+For an interactive command line tool to calculate BP for specific Pokemon
 
 ```sh
 $ yarn analyze
 ```
 ## Dev
 
+In the top level directory
+
 ```sh
+# Linking
+$ yarn
+
 # Building
 $ yarn build
 
