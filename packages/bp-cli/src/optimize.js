@@ -1,18 +1,23 @@
-import fs from 'fs';
-import progress from 'cli-progress';
-import { Spinner } from 'cli-spinner';
+/**
+ * Performs BP optimization on all Pokemon currently available in the game,
+ * and outputs the results in a CSV file.
+ */
 
+import fs from 'fs';
+
+import progress from 'cli-progress';
 import {
   maxPL,
   calcBP,
   calcCP,
   getMinStats,
   buildCPMTable,
-  fetchBaseStats,
   IV_VALUES,
   CP_MAX_GREAT,
   CP_MAX_ULTRA,
 } from 'shared';
+
+import fetchBaseStatsWithSpinner from './utils/fetchBaseStatsWithSpinner';
 
 /**
  * Maximizes the BP of a Pokemon, by altering it's IV and PL.
@@ -61,20 +66,31 @@ function optimizeAllPokemonBP(baseStats, cpmTable, maxCP) {
   const results = [];
   names.forEach((name) => {
     const {
-      baseS, baseA, baseD,
+      baseS,
+      baseA,
+      baseD,
     } = baseStats[name];
     const {
-      minS, minA, minD, minPL,
+      minS,
+      minA,
+      minD,
+      minPL,
     } = getMinStats(name);
     if (calcCP(baseS, baseA, baseD, minS, minA, minD, cpmTable[minPL]) <= maxCP) {
       const {
-        pl, ivS, ivA, ivD, bp,
+        pl,
+        ivS,
+        ivA,
+        ivD,
+        bp,
       } = maxBP(cpmTable, baseS, baseA, baseD, maxCP, minS, minA, minD, minPL);
       const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
       results.push([name, pl, ivS, ivA, ivD, cp, bp]);
     }
+
     progressBar.increment();
   });
+
   progressBar.stop();
   return results;
 }
@@ -94,6 +110,7 @@ function writeResultsToCSV(results, fileName) {
     results.forEach((result) => {
       fs.appendFileSync(pathToFile, `${result}\n`);
     });
+
     console.log(`+ Output results to file out/${fileName}`);
   } catch (err) {
     console.log('- Error in writeResultsToCSV()');
@@ -107,11 +124,7 @@ function writeResultsToCSV(results, fileName) {
  */
 async function runBPAnalysis() {
   const cpmTable = buildCPMTable();
-  const wheel = new Spinner('%s  Fetching Pokemon stats');
-  wheel.start();
-  wheel.setSpinnerString(20);
-  const baseStats = await fetchBaseStats();
-  wheel.stop(true);
+  const baseStats = await fetchBaseStatsWithSpinner();
   console.log('+ Optimizing for Great League');
   const resultsGreat = optimizeAllPokemonBP(baseStats, cpmTable, CP_MAX_GREAT);
   console.log('+ Optimizing for Ultra League');
@@ -124,7 +137,6 @@ async function runBPAnalysis() {
 
   resultsGreat.sort(sortByBP);
   resultsUltra.sort(sortByBP);
-
   writeResultsToCSV(resultsGreat, 'great.csv');
   writeResultsToCSV(resultsUltra, 'ultra.csv');
 }

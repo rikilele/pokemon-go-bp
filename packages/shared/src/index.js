@@ -1,3 +1,10 @@
+import buildCPMTable from './functions/buildCPMTable';
+import calcBP from './functions/calcBP';
+import calcCP from './functions/calcCP';
+import fetchBaseStats from './functions/fetchBaseStats';
+import getMinStats from './functions/getMinStats';
+import maxPL from './functions/maxPL';
+
 export {
   buildCPMTable,
   calcBP,
@@ -5,7 +12,7 @@ export {
   fetchBaseStats,
   getMinStats,
   maxPL,
-} from './functions';
+};
 
 export {
   CP_MAX_GREAT,

@@ -1,25 +1,131 @@
+/**
+ * An interactive command-line interface to analyze the BP of Pokemon input by user.
+ */
+
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { Spinner } from 'cli-spinner';
-
 import {
   maxPL,
   calcBP,
   calcCP,
   getMinStats,
   buildCPMTable,
-  fetchBaseStats,
   CP_MAX_GREAT,
   CP_MAX_ULTRA,
 } from 'shared';
 
-async function run() {
-  console.log('');
-  const wheel = new Spinner('%s  Fetching Pokemon stats');
-  wheel.start();
-  wheel.setSpinnerString(20);
-  const baseStats = await fetchBaseStats();
-  wheel.stop(true);
+import fetchBaseStatsWithSpinner from './utils/fetchBaseStatsWithSpinner';
+
+/**
+ * Displays BP optimization results based on league param.
+ */
+function displayCurrAndOptBP(
+  cp,
+  pl,
+  baseS,
+  baseA,
+  baseD,
+  ivS,
+  ivA,
+  ivD,
+  cpmTable,
+  maxCP,
+  leagueName,
+) {
+  if (cp <= maxCP) {
+    const bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], maxCP);
+    const optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, maxCP);
+    const optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], maxCP);
+    const optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
+    const msg1 = `+ This Pokemon's ${leagueName} BP is ${chalk.cyan.bold.underline(bp)}`;
+    const msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
+    console.log(msg1);
+    console.log(msg2);
+  } else {
+    console.log(`- This Pokemon is not eligible for the ${leagueName}`);
+  }
+}
+
+/**
+ * Analyzes input pokemon stats for Great and Ultra League BP optimization,
+ * and displays the results on the console.
+ */
+function displayBPAnalysis(pokemon, baseStats, cpmTable) {
+  const {
+    baseS,
+    baseA,
+    baseD,
+  } = baseStats[pokemon.name];
+  const ivS = parseInt(pokemon.ivS, 10);
+  const ivA = parseInt(pokemon.ivA, 10);
+  const ivD = parseInt(pokemon.ivD, 10);
+  let pl = parseFloat(pokemon.pl);
+  if (!pokemon.plKnown) {
+    pl = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, pokemon.cp);
+  }
+
+  const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
+  console.log(
+    `\n+ Name:    ${pokemon.name}`
+    + `\n+ CP:      ${cp}`
+    + `\n+ PL:      ${pl}`
+    + `\n+ Stamina: ${ivS}`
+    + `\n+ Attack:  ${ivA}`
+    + `\n+ Defense: ${ivD}\n`,
+  );
+
+  const {
+    minS,
+    minA,
+    minD,
+    minPL,
+  } = getMinStats(pokemon.name);
+  if (
+    ivS >= minS
+    && ivA >= minA
+    && ivD >= minD
+    && pl >= minPL
+  ) {
+    displayCurrAndOptBP(
+      cp,
+      pl,
+      baseS,
+      baseA,
+      baseD,
+      ivS,
+      ivA,
+      ivD,
+      cpmTable,
+      CP_MAX_GREAT,
+      'Great League',
+    );
+    console.log();
+    displayCurrAndOptBP(
+      cp,
+      pl,
+      baseS,
+      baseA,
+      baseD,
+      ivS,
+      ivA,
+      ivD,
+      cpmTable,
+      CP_MAX_ULTRA,
+      'Ultra League',
+    );
+  } else {
+    console.log('- This Pokemon has illegal IV or PL stats');
+  }
+  console.log();
+}
+
+/**
+ * The command-line interface of the app.
+ */
+async function cli() {
+  console.log();
+  const cpmTable = buildCPMTable();
+  const baseStats = await fetchBaseStatsWithSpinner();
   const questions = [
     {
       type: 'input',
@@ -32,7 +138,7 @@ async function run() {
     },
     {
       type: 'confirm',
-      name: 'knownPL',
+      name: 'plKnown',
       message: 'Do you know the PL of the Pokemon?',
       default: false,
     },
@@ -53,7 +159,7 @@ async function run() {
 
         return 'Please enter a valid number between 1 and 40, step by 0.5';
       },
-      when: answers => answers.knownPL,
+      when: answers => answers.plKnown,
     },
     {
       type: 'input',
@@ -64,7 +170,7 @@ async function run() {
         if (!Number.isNaN(cp) && cp >= 10) return true;
         return 'Please enter a valid number';
       },
-      when: answers => !answers.knownPL,
+      when: answers => !answers.plKnown,
     },
     {
       type: 'input',
@@ -119,95 +225,24 @@ async function run() {
     },
   ];
 
-  const ask = () => {
-    inquirer.prompt(questions).then((answer) => {
-      const {
-        baseS, baseA, baseD,
-      } = baseStats[answer.name];
-      const cpmTable = buildCPMTable();
-      const ivS = parseInt(answer.ivS, 10);
-      const ivA = parseInt(answer.ivA, 10);
-      const ivD = parseInt(answer.ivD, 10);
-      let pl = parseFloat(answer.pl);
-      if (!answer.knownPL) {
-        pl = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, answer.cp);
-      }
-
-      const cp = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl]);
-
-      console.log(
-        `\n+ Name:    ${answer.name}`
-        + `\n+ CP:      ${cp}`
-        + `\n+ PL:      ${pl}`
-        + `\n+ Stamina: ${ivS}`
-        + `\n+ Attack:  ${ivA}`
-        + `\n+ Defense: ${ivD}\n`,
-      );
-
-      const {
-        minS, minA, minD, minPL,
-      } = getMinStats(answer.name);
-      if (
-        ivS >= minS
-        && ivA >= minA
-        && ivD >= minD
-        && pl >= minPL
-      ) {
-        let bp = 0;
-        let optPL = 0;
-        let optBP = 0;
-        let optCP = 0;
-        let msg1 = '';
-        let msg2 = '';
-        if (cp <= CP_MAX_GREAT) {
-          bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], CP_MAX_GREAT);
-          optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_GREAT);
-          optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], CP_MAX_GREAT);
-          optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-          msg1 = `+ This Pokemon's Great League BP is ${chalk.cyan.bold.underline(bp)}`;
-          msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
-          console.log(msg1);
-          console.log(msg2);
-        } else {
-          console.log('- This Pokemon is not eligible for the Great League');
-        }
-
-        console.log('');
-
-        if (cp <= CP_MAX_ULTRA) {
-          bp = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[pl], CP_MAX_ULTRA);
-          optPL = maxPL(cpmTable, baseS, baseA, baseD, ivS, ivA, ivD, CP_MAX_ULTRA);
-          optBP = calcBP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL], CP_MAX_ULTRA);
-          optCP = calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpmTable[optPL]);
-          msg1 = `+ This Pokemon's Ultra League BP is ${chalk.cyan.bold.underline(bp)}`;
-          msg2 = `+ At PL ${optPL} and CP ${optCP}, this Pokemon's BP is optimized to ${chalk.red.underline(optBP)}`;
-          console.log(msg1);
-          console.log(msg2);
-        } else {
-          console.log('- This Pokemon is not eligible for the Ultra League');
-        }
-      } else {
-        console.log('- This Pokemon has illegal IV or PL stats');
-      }
-
-      console.log('');
-
-      inquirer.prompt({
-        type: 'confirm',
-        name: 'keepGoing',
-        message: 'Do you want to continue with your analysis?',
-        default: true,
-      })
-        .then((ans) => {
-          console.log('');
-          if (ans.keepGoing) {
-            ask();
-          }
-        });
+  let prompt = true;
+  while (prompt) { /* eslint-disable no-await-in-loop */
+    const pokemon = await inquirer.prompt(questions);
+    displayBPAnalysis(pokemon, baseStats, cpmTable);
+    const { keepGoing } = await inquirer.prompt({
+      type: 'confirm',
+      name: 'keepGoing',
+      message: 'Do you want to continue with your analysis?',
+      default: true,
     });
-  };
-
-  ask();
+    console.log();
+    prompt = keepGoing;
+  }
 }
 
-run();
+// Start command-line interface
+cli(process.argv)
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
