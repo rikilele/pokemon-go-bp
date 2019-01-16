@@ -1,6 +1,5 @@
 import rp from 'request-promise';
 import $ from 'cheerio';
-import spinner from 'cli-spinner';
 
 import {
   PL_VALUES,
@@ -63,10 +62,6 @@ export function calcCP(baseS, baseA, baseD, ivS, ivA, ivD, cpm) {
  * See {@link https://pokemongo.gamewith.jp/article/show/35945} for full table.
  */
 export async function fetchBaseStats() {
-  const wheel = new spinner.Spinner('%s  Fetching Pokemon stats');
-  wheel.start();
-  wheel.setSpinnerString(20);
-
   const baseStats = {};
   const html = await rp('https://pokemongo.gamewith.jp/article/show/35945');
   const table = $('tr', '.all_basestats_table', html);
@@ -82,7 +77,6 @@ export async function fetchBaseStats() {
     }
   });
 
-  wheel.stop(true);
   return baseStats;
 }
 

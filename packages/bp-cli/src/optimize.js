@@ -1,5 +1,6 @@
 import fs from 'fs';
 import progress from 'cli-progress';
+import { Spinner } from 'cli-spinner';
 
 import {
   maxPL,
@@ -106,7 +107,11 @@ function writeResultsToCSV(results, fileName) {
  */
 async function runBPAnalysis() {
   const cpmTable = buildCPMTable();
+  const wheel = new Spinner('%s  Fetching Pokemon stats');
+  wheel.start();
+  wheel.setSpinnerString(20);
   const baseStats = await fetchBaseStats();
+  wheel.stop(true);
   console.log('+ Optimizing for Great League');
   const resultsGreat = optimizeAllPokemonBP(baseStats, cpmTable, CP_MAX_GREAT);
   console.log('+ Optimizing for Ultra League');

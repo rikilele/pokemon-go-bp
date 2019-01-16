@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
+import { Spinner } from 'cli-spinner';
 
 import {
   maxPL,
@@ -13,10 +14,12 @@ import {
 } from 'shared';
 
 async function run() {
+  console.log('');
+  const wheel = new Spinner('%s  Fetching Pokemon stats');
+  wheel.start();
+  wheel.setSpinnerString(20);
   const baseStats = await fetchBaseStats();
-
-  console.log('\n+ Please enter Pokemon details\n');
-
+  wheel.stop(true);
   const questions = [
     {
       type: 'input',
