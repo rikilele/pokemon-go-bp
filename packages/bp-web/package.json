@@ -1,0 +1,25 @@
+{
+  "name": "myapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prestart": "cd scripts && node update-config.js",
+    "start": "react-scripts start",
+    "prebuild": "cd scripts && node update-config.js",
+    "build": "react-scripts build"
+  },
+  "dependencies": {
+    "prop-types": "^15.6.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "devDependencies": {
+    "react-scripts": "^2.1.3"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

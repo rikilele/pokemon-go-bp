@@ -17,6 +17,7 @@
     "packages/*"
   ],
   "scripts": {
+    "web": "cd packages/bp-web && yarn start",
     "analyze": "cd packages/bp-cli && yarn analyze",
     "optimize": "cd packages/bp-cli && yarn optimize",
     "prebuild": "lerna exec --parallel -- del-cli dist",
